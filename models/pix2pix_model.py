@@ -6,6 +6,7 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 import torch
 import models.networks as networks
 import util.util as util
+from scipy import misc
 
 
 class Pix2PixModel(torch.nn.Module):
@@ -40,6 +41,7 @@ class Pix2PixModel(torch.nn.Module):
     # routines based on |mode|.
     def forward(self, data, mode):
         input_semantics, real_image = self.preprocess_input(data)
+        # misc.imsave('ll.png', input_semantics[0,:,:,:].data.cpu().numpy().transpose(1,2,0))
 
         if mode == 'generator':
             g_loss, generated = self.compute_generator_loss(
@@ -107,28 +109,34 @@ class Pix2PixModel(torch.nn.Module):
     # |data|: dictionary of the input data
 
     def preprocess_input(self, data):
+
         # move to GPU and change data types
-        data['label'] = data['label'].long()
+        if not self.opt.rgb:
+            data['label'] = data['label'].long()
         if self.use_gpu():
             data['label'] = data['label'].cuda()
             data['instance'] = data['instance'].cuda()
             data['image'] = data['image'].cuda()
 
-        # create one-hot label map
         label_map = data['label']
-        bs, _, h, w = label_map.size()
-        nc = self.opt.label_nc + 1 if self.opt.contain_dontcare_label \
-            else self.opt.label_nc
-        input_label = self.FloatTensor(bs, nc, h, w).zero_()
-        input_semantics = input_label.scatter_(1, label_map, 1.0)
+        if self.opt.rgb:
+            assert label_map.size(1)==3
+            return label_map, data['image']
+        else:
+            # create one-hot label map
+            bs, _, h, w = label_map.size()
+            nc = self.opt.label_nc + 1 if self.opt.contain_dontcare_label \
+                else self.opt.label_nc
+            input_label = self.FloatTensor(bs, nc, h, w).zero_()
+            input_semantics = input_label.scatter_(1, label_map, 1.0)
 
-        # concatenate instance map if it exists
-        if not self.opt.no_instance:
-            inst_map = data['instance']
-            instance_edge_map = self.get_edges(inst_map)
-            input_semantics = torch.cat((input_semantics, instance_edge_map), dim=1)
+            # concatenate instance map if it exists
+            if not self.opt.no_instance:
+                inst_map = data['instance']
+                instance_edge_map = self.get_edges(inst_map)
+                input_semantics = torch.cat((input_semantics, instance_edge_map), dim=1)
 
-        return input_semantics, data['image']
+            return input_semantics, data['image']
 
     def compute_generator_loss(self, input_semantics, real_image):
         G_losses = {}

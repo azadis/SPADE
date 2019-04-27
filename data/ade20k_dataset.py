@@ -5,6 +5,7 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 
 from data.pix2pix_dataset import Pix2pixDataset
 from data.image_folder import make_dataset
+from scipy.io import loadmat
 
 
 class ADE20KDataset(Pix2pixDataset):
@@ -45,9 +46,16 @@ class ADE20KDataset(Pix2pixDataset):
 
         return label_paths, image_paths, instance_paths
 
+    def get_colormap(self):
+        root = 'color150.mat'
+        color_map = loadmat(root)
+        return color_map
+
+
     # In ADE20k, 'unknown' label is of value 0.
     # Change the 'unknown' label to the last label to match other datasets.
     def postprocess(self, input_dict):
         label = input_dict['label']
-        label = label - 1
-        label[label == -1] = self.opt.label_nc
+        if not self.opt.rgb:
+            label = label - 1
+            label[label == -1] = self.opt.label_nc

@@ -55,15 +55,14 @@ class Visualizer():
                 if len(image_numpy.shape) >= 4:
                     image_numpy = image_numpy[0]
                 scipy.misc.toimage(image_numpy).save(s, format="jpeg")
+                # scipy.misc.imsave('%s.png'%label, image_numpy)
                 # Create an Image object
                 img_sum = self.tf.Summary.Image(encoded_image_string=s.getvalue(), height=image_numpy.shape[0], width=image_numpy.shape[1])
                 # Create a Summary value
                 img_summaries.append(self.tf.Summary.Value(tag=label, image=img_sum))
-
             # Create and write Summary
             summary = self.tf.Summary(value=img_summaries)
             self.writer.add_summary(summary, step)
-
         if self.use_html: # save images to a html file
             for label, image_numpy in visuals.items():
                 if isinstance(image_numpy, list):
@@ -127,10 +126,12 @@ class Visualizer():
 
     def convert_visuals_to_numpy(self, visuals):
         for key, t in visuals.items():
+
             tile = self.opt.batchSize > 8
             if 'input_label' == key:
                 t = util.tensor2label(t, self.opt.label_nc + 2, tile=tile)
             else:
+                scipy.misc.imsave('%s-cv.png'%key, t[0,:,:,:].data.cpu().numpy().transpose(1,2,0))
                 t = util.tensor2im(t, tile=tile)
             visuals[key] = t
         return visuals

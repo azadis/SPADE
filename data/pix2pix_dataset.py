@@ -7,6 +7,8 @@ from data.base_dataset import BaseDataset, get_params, get_transform
 from PIL import Image
 import util.util as util
 import os
+import torch
+from scipy import misc
 
 
 class Pix2pixDataset(BaseDataset):
@@ -18,8 +20,9 @@ class Pix2pixDataset(BaseDataset):
 
     def initialize(self, opt):
         self.opt = opt
-
         label_paths, image_paths, instance_paths = self.get_paths(opt)
+        self.color_map = self.get_colormap()
+
 
         util.natural_sort(label_paths)
         util.natural_sort(image_paths)
@@ -49,19 +52,48 @@ class Pix2pixDataset(BaseDataset):
         assert False, "A subclass of Pix2pixDataset must override self.get_paths(self, opt)"
         return label_paths, image_paths, instance_paths
 
+    def get_colormap(self):
+        color_map = []
+        assert False, "A subclass of Pix2pixDataset must override self.get_colormap(self)"
+        return color_map
+
+
     def paths_match(self, path1, path2):
         filename1_without_ext = os.path.splitext(os.path.basename(path1))[0]
         filename2_without_ext = os.path.splitext(os.path.basename(path2))[0]
         return filename1_without_ext == filename2_without_ext
 
+    def index_to_color(self, label):
+        rgbOut = torch.zeros([label.size[0], label.size[1]])
+        for cls in range(self.opt.label_nc):
+            [inx, iny] = find(label == cls);
+            for ind in range(inx):
+                rgbOut[inx(ind), iny(ind),:] = self.color_map[cls,:];
+            end
+        end
+        return rgbOut
+        
+
     def __getitem__(self, index):
         # Label Image
         label_path = self.label_paths[index]
+
         label = Image.open(label_path)
         params = get_params(self.opt, label.size)
-        transform_label = get_transform(self.opt, params, method=Image.NEAREST, normalize=False)
-        label_tensor = transform_label(label) * 255.0
-        label_tensor[label_tensor == 255] = self.opt.label_nc  # 'unknown' is opt.label_nc
+        if not self.opt.rgb:
+            transform_label = get_transform(self.opt, params, method=Image.NEAREST, normalize=False)
+        else:
+            transform_label = get_transform(self.opt, params, method=Image.BICUBIC, normalize=True)
+
+
+        if not self.opt.rgb:
+            label_tensor = transform_label(label) * 255.0
+            label_tensor[label_tensor == 255] = self.opt.label_nc  # 'unknown' is opt.label_nc
+
+        else:
+            label_tensor = transform_label(label)
+
+        # misc.imsave('ll.png', label_tensor.data.cpu().numpy().transpose(1,2,0))
 
         # input image (real images)
         image_path = self.image_paths[index]
