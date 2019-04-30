@@ -35,8 +35,9 @@ class ADE20KDataset(Pix2pixDataset):
         image_paths = []
         label_paths = []
         for p in all_images:
-            if '_%s_' % phase not in p:
-                continue
+            # print(p)
+            # if '_%s_' % phase not in p:
+            #     continue
             if p.endswith('.jpg'):
                 image_paths.append(p)
             elif p.endswith('.png'):

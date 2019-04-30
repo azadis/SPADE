@@ -10,6 +10,7 @@ import data
 from util.iter_counter import IterationCounter
 from util.visualizer import Visualizer
 from trainers.pix2pix_trainer import Pix2PixTrainer
+from trainers.cycleGAN_trainer import CycleGANTrainer
 
 # parse options
 opt = TrainOptions().parse()
@@ -21,7 +22,11 @@ print(' '.join(sys.argv))
 dataloader = data.create_dataloader(opt)
 
 # create trainer for our model
-trainer = Pix2PixTrainer(opt)
+if opt.model == 'pix2pix':
+    trainer = Pix2PixTrainer(opt)
+else:
+    trainer = CycleGANTrainer(opt)
+
 
 # create tool for counting iterations
 iter_counter = IterationCounter(opt, len(dataloader))
