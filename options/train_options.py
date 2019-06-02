@@ -28,7 +28,6 @@ class TrainOptions(BaseOptions):
         parser.add_argument('--beta2', type=float, default=0.999, help='momentum term of adam')
         parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate for adam')
         parser.add_argument('--D_steps_per_G', type=int, default=1, help='number of discriminator iterations per generator iterations.')
-        parser.add_argument('--model', type=str, default='pix2pix', help='pix2pix or cycleGAN model?')
 
         # for discriminators
         parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in first conv layer')
