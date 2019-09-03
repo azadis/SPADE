@@ -5,4 +5,5 @@
 
 
 #cityscpaes
-python train.py --name cityscapes_noinstance --dataset_mode cityscapes --dataroot ../dynamo/datasets/cityscapes --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 24 --tf_log  --niter 100 --niter_decay 100 --no_instance
+python train.py --name cityscapes_noinstance --dataset_mode cityscapes --dataroot ../dynamo/datasets/cityscapes --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 24 --tf_log  --niter 100 --niter_decay 100 --no_instance \
+# --continue_train

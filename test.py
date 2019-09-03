@@ -2,15 +2,22 @@
 Copyright (C) 2019 NVIDIA Corporation.  All rights reserved.
 Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 """
+sys.path.insert(0, os.getcwd())
+sys.path.insert(0, '../dynamo')
+sys.path.insert(0, '../dynamo/dynamo')
 
 import os
 from collections import OrderedDict
+from torch.autograd import Variable
 
 import data
 from options.test_options import TestOptions
 from models.pix2pix_model import Pix2PixModel
 from util.visualizer import Visualizer
 from util import html
+from dynamo.modules.inception import InceptionV3
+from dynamo.modules.fid_score import calculate_fid_given_acts, get_activations
+
 
 opt = TestOptions().parse()
 
@@ -43,3 +50,35 @@ for i, data_i in enumerate(dataloader):
         visualizer.save_images(webpage, visuals, img_path[b:b + 1])
 
 webpage.save()
+
+compute_FID()
+
+def compute_FID(self):
+    nums_fid = 1000
+    dims = 2048
+    batchsize = 10 
+    all_reals = np.zeros((int(nums_fid/batchsize)*batchsize,dims))
+    all_fakes = np.zeros((int(nums_fid/batchsize)*batchsize,dims))
+
+    #load inception network
+    block_idx = InceptionV3.BLOCK_INDEX_BY_DIM[2048]
+    self.inception_model = InceptionV3([block_idx])
+    self.inception_model.cuda()
+
+    for i, data_i in enumerate(dataloader):
+        if i * batchsize >= nums_fid:
+            break
+        generated = model(data_i, mode='inference')
+        fake_acts = get_activations(generated, self.inception_model, batchsize, cuda=True)
+        all_fakes[i*batchsize:i*batchsize+fake_acts.shape[0],:] = fake_acts
+
+    for i, data_i in enumerate(dataloader):
+        if i * batchsize >= nums_fid:
+            break
+            real_ims = Variable(data_i['image']).cuda()
+            print(img.size())
+            real_acts = get_activations(real_ims, self.inception_model, batchsize, cuda=True)
+            all_reals[i*batchsize:i*batchsize+real_acts.shape[0],:] = real_acts
+
+    fid_eval = calculate_fid_given_acts(all_reals, all_fakes)
+    return fid_eval
