@@ -86,9 +86,12 @@ class Pix2PixModel(torch.nn.Module):
             G_lr, D_lr = opt.lr / 2, opt.lr * 2
 
         optimizer_G = torch.optim.Adam(G_params, lr=G_lr, betas=(beta1, beta2))
-        optimizer_D = torch.optim.Adam(D_params, lr=D_lr, betas=(beta1, beta2))
+        if opt.isTrain:
+            optimizer_D = torch.optim.Adam(D_params, lr=D_lr, betas=(beta1, beta2))
 
-        return optimizer_G, optimizer_D
+            return optimizer_G, optimizer_D
+        else:
+            return optimizer_G, None
 
     def save(self, epoch):
         util.save_network(self.netG, 'G', epoch, self.opt)
@@ -153,7 +156,6 @@ class Pix2PixModel(torch.nn.Module):
 
     def compute_generator_loss(self, input_semantics, real_image):
         G_losses = {}
-
         fake_image, KLD_loss = self.generate_fake(
             input_semantics, real_image, compute_kld_loss=self.opt.use_vae)
 
@@ -209,7 +211,7 @@ class Pix2PixModel(torch.nn.Module):
         z = self.reparameterize(mu, logvar)
         return z, mu, logvar
 
-    def generate_fake(self, input_semantics, real_image, compute_kld_loss=False):
+    def generate_fake(self, input_semantics, real_image=torch.tensor([]), compute_kld_loss=False):
         z = None
         KLD_loss = None
         if self.opt.use_vae:
@@ -270,7 +272,7 @@ class Pix2PixModel(torch.nn.Module):
             fake_semantics, real_image, compute_kld_loss=self.opt.use_vae)
 
         pred_fake, pred_real = self.discriminate_pairs(
-            fake_semantics, fake_image, real_semantics, real_image)
+            fake_semantics.detach(), fake_image, real_semantics, real_image)
 
         G_losses['GAN'] = self.criterionGAN(pred_fake, True,
                                             for_discriminator=False)

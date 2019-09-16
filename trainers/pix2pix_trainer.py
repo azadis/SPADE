@@ -25,9 +25,9 @@ class Pix2PixTrainer():
             self.pix2pix_model_on_one_gpu = self.pix2pix_model
 
         self.generated = None
+        self.optimizer_G, self.optimizer_D = \
+            self.pix2pix_model_on_one_gpu.create_optimizers(opt)
         if opt.isTrain:
-            self.optimizer_G, self.optimizer_D = \
-                self.pix2pix_model_on_one_gpu.create_optimizers(opt)
             self.old_lr = opt.lr
 
     def run_generator_one_step(self, data):
