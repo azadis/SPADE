@@ -37,8 +37,11 @@ def modify_commandline_options(parser, is_train):
     return parser
 
 
-def create_network(cls, opt):
-    net = cls(opt)
+def create_network(cls, opt, conditional=True):
+    if not conditional:
+        net = cls(opt, conditional)
+    else:
+        net = cls(opt)
     net.print_network()
     if len(opt.gpu_ids) > 0:
         assert(torch.cuda.is_available())
@@ -56,6 +59,10 @@ def define_D(opt):
     netD_cls = find_network_using_name(opt.netD, 'discriminator')
     return create_network(netD_cls, opt)
 
+
+def define_D2(opt):
+    netD_cls = find_network_using_name(opt.netD, 'discriminator')
+    return create_network(netD_cls, opt, conditional=False)
 
 def define_E(opt):
     # there exists only one encoder type

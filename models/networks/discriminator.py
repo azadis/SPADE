@@ -27,18 +27,18 @@ class MultiscaleDiscriminator(BaseNetwork):
 
         return parser
 
-    def __init__(self, opt):
+    def __init__(self, opt, conditional=True):
         super().__init__()
         self.opt = opt
 
         for i in range(opt.num_D):
-            subnetD = self.create_single_discriminator(opt)
+            subnetD = self.create_single_discriminator(opt, conditional)
             self.add_module('discriminator_%d' % i, subnetD)
 
-    def create_single_discriminator(self, opt):
+    def create_single_discriminator(self, opt, conditional=True):
         subarch = opt.netD_subarch
         if subarch == 'n_layer':
-            netD = NLayerDiscriminator(opt)
+            netD = NLayerDiscriminator(opt, conditional)
         else:
             raise ValueError('unrecognized discriminator subarchitecture %s' % subarch)
         return netD
@@ -71,14 +71,14 @@ class NLayerDiscriminator(BaseNetwork):
                             help='# layers in each discriminator')
         return parser
 
-    def __init__(self, opt):
+    def __init__(self, opt, conditional=True):
         super().__init__()
         self.opt = opt
 
         kw = 4
         padw = int(np.ceil((kw - 1.0) / 2))
         nf = opt.ndf
-        input_nc = self.compute_D_input_nc(opt)
+        input_nc = self.compute_D_input_nc(opt, conditional)
 
         norm_layer = get_nonspade_norm_layer(opt, opt.norm_D)
         sequence = [[nn.Conv2d(input_nc, nf, kernel_size=kw, stride=2, padding=padw),
@@ -98,8 +98,12 @@ class NLayerDiscriminator(BaseNetwork):
         for n in range(len(sequence)):
             self.add_module('model' + str(n), nn.Sequential(*sequence[n]))
 
-    def compute_D_input_nc(self, opt):
-        input_nc = opt.label_nc + opt.output_nc
+    def compute_D_input_nc(self, opt, conditional=True):
+        if conditional:
+            input_nc = opt.label_nc + opt.output_nc
+        else:
+            input_nc = opt.output_nc
+
         if opt.contain_dontcare_label:
             input_nc += 1
         if not opt.no_instance:
