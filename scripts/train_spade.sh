@@ -11,4 +11,5 @@
 
 
 #ade_indoor
-python train.py --name ade_indoor --dataset_mode ade_indoor --dataroot ../dynamo/datasets/ADE_indoor --gpu_ids 2,3 --batchSize 4 --tf_log  --niter 150 --niter_decay 150 --no_instance \
+python train.py --name ade_indoor --dataset_mode ade_indoor --dataroot /mnt/disks/sazadi/segGAN/dynamo/datasets/ADE_indoor --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 48 --tf_log  --niter 150 --niter_decay 150 --no_instance \
+ --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints
