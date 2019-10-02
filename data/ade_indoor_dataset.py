@@ -5,7 +5,7 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 
 from data.pix2pix_dataset import Pix2pixDataset
 from data.image_folder import make_dataset
-
+import os
 
 class ADEIndoorDataset(Pix2pixDataset):
 
@@ -30,24 +30,21 @@ class ADEIndoorDataset(Pix2pixDataset):
         root = opt.dataroot
         phase = 'val' if opt.phase == 'test' else 'train'
 
-        label_dir = os.path.join(root, 'gtFine', phase)
+        # with open('%s/ADE_indoor_lbl_info_%s.txt'%(root, phase),'r') as f:
+        #     label_paths_all = f.readlines()
+
+        label_dir = os.path.join(root, 'ADE15c_indoor_%s_lbl'%phase)
         label_paths_all = make_dataset(label_dir, recursive=True)
-        label_paths = [p for p in label_paths_all if p.endswith('_labelIds.png')]
+        label_paths = [p for p in label_paths_all if p.endswith('.png')]
+        # label_paths = [p.split(' ')[0].strip() for p in label_paths_all if p.split(' ')[0].endswith('.png')]
 
-        image_dir = os.path.join(root, 'leftImg8bit', phase)
-        image_paths = make_dataset(image_dir, recursive=True)
+        # with open('%s/ADE_indoor_im_info_%s.txt'%(root, phase),'r') as f:
+        #     image_paths_all = f.readlines()
+        image_dir = os.path.join(root, 'ADE15c_indoor_%s_im'%phase)
+        image_paths_all = make_dataset(image_dir, recursive=True)
+        image_paths = [im for im in image_paths_all if im.endswith('.jpg')]
+        # image_paths = [im.split(' ')[0].strip() for im in image_paths_all if im.split(' ')[0].endswith('.jpg')]
 
-
-        all_images = make_dataset(root, recursive=True, read_cache=False, write_cache=False)
-        image_paths = []
-        label_paths = []
-        for p in all_images:
-            if '_%s_' % phase not in p:
-                continue
-            if p.endswith('.jpg'):
-                image_paths.append(p)
-            elif p.endswith('.png'):
-                label_paths.append(p)
 
         instance_paths = []  # don't use instance map for ade20k
 
