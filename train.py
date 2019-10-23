@@ -62,6 +62,7 @@ for epoch in iter_counter.training_epochs():
             iter_counter.record_current_iter()
 
     trainer.update_learning_rate(epoch)
+    print(trainer.old_lr)
     iter_counter.record_epoch_end()
 
     if epoch % opt.save_epoch_freq == 0 or \
