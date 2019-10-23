@@ -6,4 +6,8 @@
 # --rgb
 
 #cityscapes
-python test.py --name cityscapes_noinstance --dataset_mode cityscapes --dataroot ../dynamo/datasets/cityscapes --no_instance
+# python test.py --name cityscapes_noinstance --dataset_mode cityscapes --dataroot ../dynamo/datasets/cityscapes --no_instance
+
+
+#ade_bedroom
+python test.py --name ade_bedroom --dataset_mode ade_bedroom --dataroot ../dynamo/datasets/ade_bedroom --no_instance
