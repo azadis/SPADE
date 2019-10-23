@@ -88,29 +88,29 @@ class SPADEGenerator(BaseNetwork):
             x = F.interpolate(seg, size=(self.sh, self.sw))
             x = self.fc(x)
 
-        x = self.head_0(x, seg)
+        x = self.head_0(x, seg.detach())
 
         x = self.up(x)
-        x = self.G_middle_0(x, seg)
+        x = self.G_middle_0(x, seg.detach())
 
         if self.opt.num_upsampling_layers == 'more' or \
            self.opt.num_upsampling_layers == 'most':
             x = self.up(x)
 
-        x = self.G_middle_1(x, seg)
+        x = self.G_middle_1(x, seg.detach())
 
         x = self.up(x)
-        x = self.up_0(x, seg)
+        x = self.up_0(x, seg.detach())
         x = self.up(x)
-        x = self.up_1(x, seg)
+        x = self.up_1(x, seg.detach())
         x = self.up(x)
-        x = self.up_2(x, seg)
+        x = self.up_2(x, seg.detach())
         x = self.up(x)
-        x = self.up_3(x, seg)
+        x = self.up_3(x, seg.detach())
 
         if self.opt.num_upsampling_layers == 'most':
             x = self.up(x)
-            x = self.up_4(x, seg)
+            x = self.up_4(x, seg.detach())
 
         x = self.conv_img(F.leaky_relu(x, 2e-1))
         x = F.tanh(x)

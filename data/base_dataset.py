@@ -46,7 +46,12 @@ def get_params(opt, size):
 
 def get_transform(opt, params, method=Image.BICUBIC, normalize=True, toTensor=True):
     transform_list = []
-    if 'resize' in opt.preprocess_mode:
+    if 'fixed_crop_resize' == opt.preprocess_mode:
+        transform_list.append(transforms.Lambda(lambda img: __fixed_crop(img, (0,256), (768,1536))))
+        w = opt.crop_size
+        h = round(opt.crop_size / opt.aspect_ratio)
+        transform_list.append(transforms.Lambda(lambda img: __resize(img, w, h, method)))
+    elif 'resize' in opt.preprocess_mode:
         osize = [opt.load_size, opt.load_size]
         transform_list.append(transforms.Resize(osize, interpolation=method))
     elif 'scale_width' in opt.preprocess_mode:
@@ -54,7 +59,7 @@ def get_transform(opt, params, method=Image.BICUBIC, normalize=True, toTensor=Tr
     elif 'scale_shortside' in opt.preprocess_mode:
         transform_list.append(transforms.Lambda(lambda img: __scale_shortside(img, opt.load_size, method)))
 
-    if 'crop' in opt.preprocess_mode:
+    if 'crop' in opt.preprocess_mode and opt.preprocess_mode!='fixed_crop_resize':
         transform_list.append(transforms.Lambda(lambda img: __crop(img, params['crop_pos'], opt.crop_size)))
 
     if opt.preprocess_mode == 'none':
@@ -121,6 +126,11 @@ def __crop(img, pos, size):
     tw = th = size
     return img.crop((x1, y1, x1 + tw, y1 + th))
 
+def __fixed_crop(img, pos, size):
+    ow, oh = img.size
+    x1, y1 = pos
+    tw , th = size
+    return img.crop((x1, y1, x1 + tw, y1 + th))
 
 def __flip(img, flip):
     if flip:
