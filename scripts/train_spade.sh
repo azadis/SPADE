@@ -17,3 +17,8 @@
 #ade_bedroom
 python train.py --name ade_bedroom --dataset_mode ade_bedroom --dataroot /mnt/disks/sazadi/segGAN/dynamo/datasets/ADE_bedroom --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 48 --tf_log  --niter 300 --niter_decay 300 --no_instance \
  --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints
+
+
+#cityscapes_full
+# python train.py --name cityscapes_full --dataset_mode cityscapes_full_weighted --dataroot /mnt/disks/sazadi/segGAN/dynamo/datasets --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 48 --tf_log  --niter 30 --niter_decay 30 --no_instance \
+#  --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints
