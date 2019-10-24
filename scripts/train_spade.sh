@@ -21,4 +21,4 @@
 
 #cityscapes_full
 python train.py --name cityscapes_full --dataset_mode cityscapes_full_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 24 --tf_log  --niter 30 --niter_decay 30 --no_instance \
- --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --no_pairing_check
+ --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --not_sort
