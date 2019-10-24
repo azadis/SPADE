@@ -8,7 +8,7 @@ from data.pix2pix_dataset import Pix2pixDataset
 from data.image_folder import make_dataset
 
 
-class CityscapesFullDataset(Pix2pixDataset):
+class CityscapesFullWeightedDataset(Pix2pixDataset):
 
     @staticmethod
     def modify_commandline_options(parser, is_train):
@@ -17,7 +17,8 @@ class CityscapesFullDataset(Pix2pixDataset):
         parser.set_defaults(load_size=512)
         parser.set_defaults(crop_size=512)
         parser.set_defaults(display_winsize=512)
-        parser.set_defaults(label_nc=35)
+        parser.set_defaults(label_nc=19)
+        parser.set_defaults(contain_dontcare_label=True)
         parser.set_defaults(aspect_ratio=2.0)
         opt, _ = parser.parse_known_args()
         if hasattr(opt, 'num_upsampling_layers'):

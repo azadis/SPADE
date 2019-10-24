@@ -56,22 +56,25 @@ class Pix2pixDataset(BaseDataset):
 
     def __getitem__(self, index):
         # Label Image
-        label_path = self.label_paths[index]
+        label_path = self.label_paths[index].split(' ')[0]
+        if len(self.label_paths[index].split(' '))>1:
+            im_id = int(self.label_paths[index].split(' ')[1])
         label = Image.open(label_path)
         params = get_params(self.opt, label.size)
-        transform_label = get_transform(self.opt, params, method=Image.NEAREST, normalize=False)
+        transform_label = get_transform(self.opt, params, method=Image.NEAREST, normalize=False, img_id=im_id)
         label_tensor = transform_label(label) * 255.0
         label_tensor[label_tensor == 255] = self.opt.label_nc  # 'unknown' is opt.label_nc
 
         # input image (real images)
-        image_path = self.image_paths[index]
-        assert self.paths_match(label_path, image_path), \
-            "The label_path %s and image_path %s don't match." % \
-            (label_path, image_path)
+        image_path = self.image_paths[index].split(' ')[0]
+        if not self.opt.no_pairing_check:
+            assert self.paths_match(label_path, image_path), \
+                "The label_path %s and image_path %s don't match." % \
+                (label_path, image_path)
         image = Image.open(image_path)
         image = image.convert('RGB')
 
-        transform_image = get_transform(self.opt, params)
+        transform_image = get_transform(self.opt, params, img_id=im_id)
         image_tensor = transform_image(image)
 
         # if using instance maps

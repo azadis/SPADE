@@ -44,10 +44,10 @@ def get_params(opt, size):
     return {'crop_pos': (x, y), 'flip': flip}
 
 
-def get_transform(opt, params, method=Image.BICUBIC, normalize=True, toTensor=True):
+def get_transform(opt, params, method=Image.BICUBIC, normalize=True, toTensor=True, img_id=1):
     transform_list = []
     if 'fixed_crop_resize' == opt.preprocess_mode:
-        transform_list.append(transforms.Lambda(lambda img: __fixed_crop(img, (0,256), (768,1536))))
+        transform_list.append(transforms.Lambda(lambda img: __fixed_crop(img, img_id, (256,0), (1536, 768))))
         w = opt.crop_size
         h = round(opt.crop_size / opt.aspect_ratio)
         transform_list.append(transforms.Lambda(lambda img: __resize(img, w, h, method)))
@@ -126,11 +126,15 @@ def __crop(img, pos, size):
     tw = th = size
     return img.crop((x1, y1, x1 + tw, y1 + th))
 
-def __fixed_crop(img, pos, size):
+def __fixed_crop(img, img_id, pos, size):
     ow, oh = img.size
-    x1, y1 = pos
-    tw , th = size
-    return img.crop((x1, y1, x1 + tw, y1 + th))
+    if int(img_id)>0:
+        x1, y1 = pos
+        tw , th = size
+        im_cropped = img.crop((x1, y1, x1 + tw, y1 + th))
+    else:
+        im_cropped = img
+    return im_cropped
 
 def __flip(img, flip):
     if flip:

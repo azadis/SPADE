@@ -21,7 +21,6 @@ class Pix2PixModel(torch.nn.Module):
             else torch.FloatTensor
         self.ByteTensor = torch.cuda.ByteTensor if self.use_gpu() \
             else torch.ByteTensor
-
         self.netG, self.netD, self.netE = self.initialize_networks(opt, end2end)
 
         # set loss functions
@@ -44,6 +43,7 @@ class Pix2PixModel(torch.nn.Module):
         else:
             end2end = False
         input_semantics, real_image, fake_semantics = self.preprocess_input(data, one_hot=one_hot, end2end=end2end)
+
         if mode == 'generator':
             g_loss, generated = self.compute_generator_loss(
                 input_semantics, real_image)
