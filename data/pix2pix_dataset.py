@@ -59,6 +59,8 @@ class Pix2pixDataset(BaseDataset):
         label_path = self.label_paths[index].split(' ')[0]
         if len(self.label_paths[index].split(' '))>1:
             im_id = int(self.label_paths[index].split(' ')[1])
+        else:
+            im_id = 0
         label = Image.open(label_path)
         params = get_params(self.opt, label.size)
         transform_label = get_transform(self.opt, params, method=Image.NEAREST, normalize=False, img_id=im_id)
