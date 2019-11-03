@@ -2,11 +2,11 @@
 Copyright (C) 2019 NVIDIA Corporation.  All rights reserved.
 Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 """
+import sys, os
 sys.path.insert(0, os.getcwd())
 sys.path.insert(0, '../dynamo')
 sys.path.insert(0, '../dynamo/dynamo')
 
-import os
 from collections import OrderedDict
 from torch.autograd import Variable
 

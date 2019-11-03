@@ -104,7 +104,7 @@ class NLayerDiscriminator(BaseNetwork):
         else:
             input_nc = opt.output_nc
 
-        if opt.contain_dontcare_label:
+        if opt.contain_dontcare_label and conditional:
             input_nc += 1
         if not opt.no_instance:
             input_nc += 1

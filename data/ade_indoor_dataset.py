@@ -20,7 +20,7 @@ class ADEIndoorDataset(Pix2pixDataset):
         parser.set_defaults(crop_size=256)
         parser.set_defaults(display_winsize=256)
         parser.set_defaults(label_nc=95)
-        parser.set_defaults(contain_dontcare_label=True)
+        parser.set_defaults(contain_dontcare_label=False)
         parser.set_defaults(cache_filelist_read=False)
         parser.set_defaults(cache_filelist_write=False)
         parser.set_defaults(no_instance=True)
