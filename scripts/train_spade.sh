@@ -16,8 +16,8 @@
 
 #ade_indoor
 	#res:256
-python train.py --name ade_indoor_2 --dataset_mode ade_indoor --dataroot /mnt/disks/sazadi/segGAN/dynamo/datasets/ADE_indoor --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 48 --tf_log  --niter 150 --niter_decay 150 --no_instance \
- --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --no_html
+# python train.py --name ade_indoor_2 --dataset_mode ade_indoor --dataroot /mnt/disks/sazadi/segGAN/dynamo/datasets/ADE_indoor --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 48 --tf_log  --niter 150 --niter_decay 150 --no_instance \
+#  --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --no_html
 
 	# res:128
 # python train.py --name ade_indoor_128 --dataset_mode ade_indoor --dataroot /mnt/disks/sazadi/segGAN/dynamo/datasets/ADE_indoor --gpu_ids 2,3 --batchSize 48 --tf_log  --niter 150 --niter_decay 150 --no_instance \
@@ -40,6 +40,11 @@ python train.py --name ade_indoor_2 --dataset_mode ade_indoor --dataroot /mnt/di
 # python train.py --name cityscapes_full --dataset_mode cityscapes_full_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 32 --tf_log  --niter 30 --niter_decay 30 --no_instance \
 #  --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --not_sort
 
+
+#cityscapes_10k
+	#res:256
+python train.py --name cityscapes_10k --dataset_mode cityscapes_10k_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 32 --tf_log  --niter 80 --niter_decay 80 --no_instance \
+ --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --not_sort
 
 	# res:128
 # python train.py --name cityscapes_full_128 --dataset_mode cityscapes_full_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 6,7 --batchSize 32 --tf_log  --niter 15 --niter_decay 15 --no_instance \
