@@ -48,8 +48,14 @@
 
 #cityscapes_15k
 	#res:256
-python train.py --name cityscapes_15k --dataset_mode cityscapes_15k_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 32 --tf_log  --niter 40 --niter_decay 40 --no_instance \
- --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --not_sort --no_html
+# python train.py --name cityscapes_15k --dataset_mode cityscapes_15k_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 0,1,2,3,4,5,6,7 --batchSize 32 --tf_log  --niter 40 --niter_decay 40 --no_instance \
+#  --checkpoints_dir /mnt/disks/sazadi/segGAN/SPADE/checkpoints --not_sort --no_html
+
+
+#cityscapes_15k
+	#res:128
+python train.py --name cityscapes_15k_128 --dataset_mode cityscapes_15k_weighted --dataroot /home/sazadi/projects/segGAN/dynamo/datasets --gpu_ids 8,9 --batchSize 28 --tf_log  --niter 20 --niter_decay 20 --no_instance \
+ --checkpoints_dir /shared/sazadi/data1/segGAN/SPADE/checkpoints --not_sort --no_html --load_size 256 --crop_size 256
 
 
 	# res:128
