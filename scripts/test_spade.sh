@@ -6,11 +6,11 @@
 # --rgb
 
 #cityscapes
-# python test.py --name cityscapes_noinstance --dataset_mode cityscapes --dataroot ../dynamo/datasets/cityscapes --no_instance
+# python test.py --name cityscapes_noinstance --dataset_mode cityscapes --dataroot ../SBGAN/datasets/cityscapes --no_instance
 
 
 #cityscapes_full
-python test.py --name cityscapes_full --dataset_mode cityscapes_full_weighted --dataroot ../dynamo/datasets --no_instance
+python test.py --name cityscapes_full --dataset_mode cityscapes_full_weighted --dataroot ../SBGAN/datasets --no_instance
 
 #ade_bedroom
-# python test.py --name ade_bedroom --dataset_mode ade_bedroom --dataroot ../dynamo/datasets/ade_bedroom --no_instance
+# python test.py --name ade_bedroom --dataset_mode ade_bedroom --dataroot ../SBGAN/datasets/ade_bedroom --no_instance

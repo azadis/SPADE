@@ -4,8 +4,8 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 """
 import sys, os
 sys.path.insert(0, os.getcwd())
-sys.path.insert(0, '../dynamo')
-sys.path.insert(0, '../dynamo/dynamo')
+sys.path.insert(0, '../SBGAN')
+sys.path.insert(0, '../SBGAN/SBGAN')
 
 from collections import OrderedDict
 from torch.autograd import Variable
@@ -15,8 +15,8 @@ from options.test_options import TestOptions
 from models.pix2pix_model import Pix2PixModel
 from util.visualizer import Visualizer
 from util import html
-from dynamo.modules.inception import InceptionV3
-from dynamo.modules.fid_score import calculate_fid_given_acts, get_activations
+from SBGAN.modules.inception import InceptionV3
+from SBGAN.modules.fid_score import calculate_fid_given_acts, get_activations
 
 
 opt = TestOptions().parse()
