@@ -30,20 +30,13 @@ class ADEIndoorDataset(Pix2pixDataset):
         root = opt.dataroot
         phase = 'val' if opt.phase == 'test' else 'train'
 
-        # with open('%s/ADE_indoor_lbl_info_%s.txt'%(root, phase),'r') as f:
-        #     label_paths_all = f.readlines()
-
-        label_dir = os.path.join(root, 'ADE15c_indoor_%s_lbl'%phase)
+        label_dir = os.path.join(root, 'annotations/%s'%phase)
         label_paths_all = make_dataset(label_dir, recursive=True)
         label_paths = [p for p in label_paths_all if p.endswith('.png')]
-        # label_paths = [p.split(' ')[0].strip() for p in label_paths_all if p.split(' ')[0].endswith('.png')]
 
-        # with open('%s/ADE_indoor_im_info_%s.txt'%(root, phase),'r') as f:
-        #     image_paths_all = f.readlines()
-        image_dir = os.path.join(root, 'ADE15c_indoor_%s_im'%phase)
+        image_dir = os.path.join(root, 'images/%s'%phase)
         image_paths_all = make_dataset(image_dir, recursive=True)
         image_paths = [im for im in image_paths_all if im.endswith('.jpg')]
-        # image_paths = [im.split(' ')[0].strip() for im in image_paths_all if im.split(' ')[0].endswith('.jpg')]
 
 
         instance_paths = []  # don't use instance map for ade20k
